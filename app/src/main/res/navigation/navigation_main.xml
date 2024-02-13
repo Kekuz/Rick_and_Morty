@@ -12,7 +12,11 @@
         tools:layout="@layout/fragment_recycler" >
         <action
             android:id="@+id/action_recyclerFragment_to_itemFragment"
-            app:destination="@id/itemFragment" />
+            app:destination="@id/itemFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right" />
     </fragment>
     <fragment
         android:id="@+id/itemFragment"
