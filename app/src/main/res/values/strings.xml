@@ -3,4 +3,8 @@
 
     <string name="internet_problems">Проблемы с сетью</string>
     <string name="server_error">Ошибка сервера</string>
+    <string name="status">Status</string>
+    <string name="species">Species</string>
+    <string name="type">Type</string>
+    <string name="gender">Gender</string>
 </resources>

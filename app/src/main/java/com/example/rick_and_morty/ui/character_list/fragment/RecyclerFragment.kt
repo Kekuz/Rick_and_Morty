@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.rick_and_morty.R
 import com.example.rick_and_morty.databinding.FragmentRecyclerBinding
 import com.example.rick_and_morty.domain.model.character.Character
+import com.example.rick_and_morty.ui.character_info.fragment.ItemFragment
 import com.example.rick_and_morty.ui.character_list.recycler.ItemAdapter
 import com.example.rick_and_morty.ui.character_list.view_model.RecyclerViewModel
 import com.example.rick_and_morty.ui.model.SearchState
@@ -31,7 +32,7 @@ class RecyclerFragment : Fragment() {
         {
             findNavController().navigate(
                 R.id.action_recyclerFragment_to_itemFragment,
-                //Тут еще бандл прокинуть
+                ItemFragment.createArgs(it)
             )
         }
 

@@ -26,7 +26,7 @@ class CharacterRepositoryImpl(
             }
 
             200 -> {
-                Log.d("Tracks", (response as CharacterResponseDto).results.toString())
+                Log.d("Response", (response as CharacterResponseDto).results.toString())
                 Resource.Success(CharacterMapper.map(response))
             }
 
