@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.rick_and_morty.databinding.ItemViewBinding
-import com.example.rick_and_morty.domain.model.Character
+import com.example.rick_and_morty.domain.model.character.Character
 
 class ItemAdapter(
     private val launches: List<Character>,

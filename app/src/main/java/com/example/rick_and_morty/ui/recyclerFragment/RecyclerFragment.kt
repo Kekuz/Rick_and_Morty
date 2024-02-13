@@ -5,13 +5,24 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.rick_and_morty.R
+import com.example.rick_and_morty.data.NetworkClient
+import com.example.rick_and_morty.data.network.RetrofitNetworkClient
+import com.example.rick_and_morty.data.network.RickAndMortyAPI
+import com.example.rick_and_morty.data.repository.CharacterRepositoryImpl
 import com.example.rick_and_morty.databinding.FragmentRecyclerBinding
-import com.example.rick_and_morty.domain.model.Character
-import com.example.rick_and_morty.ui.ItemFragment
+import com.example.rick_and_morty.domain.api.CharacterRepository
+import com.example.rick_and_morty.domain.impl.SearchCharactersUseCaseImpl
+import com.example.rick_and_morty.domain.model.character.Character
+import com.example.rick_and_morty.domain.model.character.CharacterResponse
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 class RecyclerFragment : Fragment() {
 
@@ -34,9 +45,19 @@ class RecyclerFragment : Fragment() {
     private val itemAdapter = ItemAdapter(characters, onClick, onEndingList)
 
     private val mockList = listOf(
-        Character("name"),
-        Character("name2"),
-        Character("name3"),
+        Character(
+            1,
+            "Рик",
+            "Жив",
+            "Человек",
+            "-",
+            "Мужчина",
+            "-",
+            emptyList(),
+            "-",
+            "-",
+        )
+
     )
 
 
@@ -54,7 +75,35 @@ class RecyclerFragment : Fragment() {
 
         binding.recyclerView.adapter = itemAdapter
 
-        showContent(mockList)
+        val client = RetrofitNetworkClient(
+            requireContext(), Retrofit.Builder()
+                .baseUrl("https://rickandmortyapi.com")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+                .create(RickAndMortyAPI::class.java)
+        )
+
+        SearchCharactersUseCaseImpl(
+            CharacterRepositoryImpl(
+                client,
+                requireContext()
+            )
+        ).execute(1) { response, errorMessage ->
+            CoroutineScope(Dispatchers.IO).launch {
+                if (response != null) {
+                    Log.d("Response", response.results.toString())
+                    if (response.results.isNotEmpty()) {
+                        withContext(Dispatchers.Main) {
+                            showContent(response.results)
+                        }
+                    }
+                } /*else if (errorMessage != null) {
+                    stateLiveData.postValue(SearchState.Error(errorMessage))
+                    lastRequest = text
+                }*/
+            }
+        }
+        //showContent(mockList)
 
     }
 

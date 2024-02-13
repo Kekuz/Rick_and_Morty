@@ -1,0 +1,50 @@
+package com.example.rick_and_morty.data.network
+
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import com.example.rick_and_morty.data.NetworkClient
+import com.example.rick_and_morty.data.network.dto.CharacterRequest
+import com.example.rick_and_morty.data.network.dto.Response
+import java.lang.Exception
+
+class RetrofitNetworkClient(
+    private val context: Context,
+    private val rickAndMortyService: RickAndMortyAPI,
+): NetworkClient {
+    override fun doRequest(dto: Any): Response {
+        if (!isConnected()) {
+            return Response().apply { resultCode = -1 }
+        }
+        if (dto !is CharacterRequest) {
+            return Response().apply { resultCode = 400 }
+        }
+        return try {
+            val resp = rickAndMortyService.searchCharacters(dto.page).execute()
+            val body = resp.body() ?: Response()
+            body.apply {
+                resultCode = resp.code()
+            }
+        } catch (e: Exception){
+            Response().apply { resultCode = 400 }
+        }
+    }
+
+
+    private fun isConnected(): Boolean {
+        val connectivityManager = context.getSystemService(
+            Context.CONNECTIVITY_SERVICE
+        ) as ConnectivityManager
+        val capabilities =
+            connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+        if (capabilities != null) {
+            when {
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> return true
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> return true
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> return true
+            }
+        }
+        return false
+    }
+
+}
