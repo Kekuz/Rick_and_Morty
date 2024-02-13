@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:paddingHorizontal="8dp"
     android:background="@color/light_gray"
-    tools:context=".ui.HostActivity">
+    tools:context=".ui.host.HostActivity">
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragmentContainerView"

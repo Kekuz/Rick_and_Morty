@@ -1,4 +1,4 @@
-package com.example.rick_and_morty.ui.recyclerFragment
+package com.example.rick_and_morty.ui.character_list.recycler
 
 import androidx.recyclerview.widget.RecyclerView
 import com.example.rick_and_morty.databinding.ItemViewBinding

@@ -1,4 +1,4 @@
-package com.example.rick_and_morty.ui.recyclerFragment
+package com.example.rick_and_morty.ui.character_list.recycler
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
