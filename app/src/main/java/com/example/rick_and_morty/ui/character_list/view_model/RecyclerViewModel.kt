@@ -26,7 +26,6 @@ class RecyclerViewModel @Inject constructor(
         stateLiveData.value = SearchState.Loading
         searchCharactersUseCase.execute(currentPage) { response, errorMessage ->
             CoroutineScope(Dispatchers.IO).launch {
-                delay(3000)
                 if (response != null) {
                     Log.d("Response", response.results.toString())
                     if (response.results.isNotEmpty() && currentPage <= response.info.pages) {

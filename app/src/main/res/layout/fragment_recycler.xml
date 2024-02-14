@@ -14,9 +14,24 @@
         android:layout_height="match_parent"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:itemCount="4"
-        tools:listitem="@layout/item_view">
+        android:visibility="gone"
+        tools:listitem="@layout/item_view" />
 
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:indeterminateTint="@color/gray"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center" />
 
-    </androidx.recyclerview.widget.RecyclerView>
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/tv_error"
+        style="@style/error_text_style"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        tools:text="Error" />
 
 </FrameLayout>

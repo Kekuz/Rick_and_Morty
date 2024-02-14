@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -75,17 +76,23 @@ class RecyclerFragment : Fragment() {
         }
     }
 
-    private fun showContent(listCharacters: List<Character>) {
+    private fun showContent(listCharacters: List<Character>) = with(binding){
         characters.addAll(listCharacters)
         itemAdapter.notifyItemRangeChanged(characters.size, listCharacters.size)
+        tvError.isVisible = false
+        progressBar.isVisible = false
+        recyclerView.isVisible = true
     }
 
-    private fun showError(errorMessage: String) {
-        //TODO
+    private fun showError(errorMessage: String) = with(binding){
+        recyclerView.isVisible = false
+        tvError.isVisible = true
+        tvError.text = errorMessage
+        progressBar.isVisible = false
     }
 
     private fun showLoading() {
-        //TODO
+        //Можно использовать для управления progress bar, если продумать xml экрана загрузки
     }
 
 
