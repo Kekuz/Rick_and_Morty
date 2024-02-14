@@ -1,19 +1,12 @@
 package com.example.rick_and_morty.data.database
 
-import android.content.Context
 import android.util.Log
-import androidx.room.Room
 import com.example.rick_and_morty.data.DatabaseClient
 import com.example.rick_and_morty.data.database.dto.CharacterDatabaseDto
 import com.example.rick_and_morty.data.mapper.DatabaseMapper
 
-class RoomDatabaseClient(context: Context) : DatabaseClient {
+class RoomDatabaseClient(private val database: CharacterDatabase) : DatabaseClient {
 
-    //TODO убрать зависимость
-    private var database: CharacterDatabase = Room.databaseBuilder(
-        context,
-        CharacterDatabase::class.java, "character-database"
-    ).build()
 
     override fun save(characters: List<CharacterDatabaseDto>) {
         Log.e("Characters saved in database", characters.toString())

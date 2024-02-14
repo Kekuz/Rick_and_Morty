@@ -1,8 +1,10 @@
 package com.example.rick_and_morty.di
 
 import android.content.Context
+import androidx.room.Room
 import com.example.rick_and_morty.data.DatabaseClient
 import com.example.rick_and_morty.data.NetworkClient
+import com.example.rick_and_morty.data.database.CharacterDatabase
 import com.example.rick_and_morty.data.database.RoomDatabaseClient
 import com.example.rick_and_morty.data.network.RetrofitNetworkClient
 import com.example.rick_and_morty.data.network.RickAndMortyAPI
@@ -35,6 +37,15 @@ class DataModule {
 
     @Provides
     @Singleton
+    fun provideCharacterDatabase(@ApplicationContext context: Context): CharacterDatabase =
+        Room.databaseBuilder(
+            context,
+            CharacterDatabase::class.java, "character-database"
+        ).build()
+
+
+    @Provides
+    @Singleton
     fun provideNetworkClient(
         @ApplicationContext context: Context,
         rickAndMortyService: RickAndMortyAPI
@@ -44,9 +55,9 @@ class DataModule {
     @Provides
     @Singleton
     fun provideDatabaseClient(
-        @ApplicationContext context: Context,
+        characterDatabase: CharacterDatabase,
     ): DatabaseClient =
-        RoomDatabaseClient(context)
+        RoomDatabaseClient(characterDatabase)
 
 
     @Provides
