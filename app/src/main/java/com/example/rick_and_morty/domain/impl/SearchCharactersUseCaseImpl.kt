@@ -1,30 +1,29 @@
 package com.example.rick_and_morty.domain.impl
 
+import android.util.Log
 import com.example.rick_and_morty.domain.api.CharacterRepository
 import com.example.rick_and_morty.domain.api.SearchCharactersUseCase
 import com.example.rick_and_morty.domain.model.Resource
 import com.example.rick_and_morty.domain.model.character.CharacterResponse
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class SearchCharactersUseCaseImpl(private val repository: CharacterRepository) :
     SearchCharactersUseCase {
     override fun execute(
         page: Int,
-        consumer: (CharacterResponse?, errorMessage: String?) -> Unit
-    ) {
-        CoroutineScope(Dispatchers.IO).launch{
-
-            when (val resource = repository.search(page)) {
+    ): Flow<Pair<CharacterResponse?, String?>> {
+        return repository.search(page).map {
+            when (it) {
                 is Resource.Success -> {
-                    consumer.invoke(resource.data, null)
+                    Pair(it.data, null)
                 }
 
                 is Resource.Error -> {
-                    consumer.invoke(null, resource.message)
+                    Pair(null, it.message)
                 }
             }
         }
+
     }
 }

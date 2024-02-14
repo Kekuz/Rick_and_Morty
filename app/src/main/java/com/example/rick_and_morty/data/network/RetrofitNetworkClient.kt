@@ -6,27 +6,30 @@ import android.net.NetworkCapabilities
 import com.example.rick_and_morty.data.NetworkClient
 import com.example.rick_and_morty.data.network.dto.CharacterRequest
 import com.example.rick_and_morty.data.network.dto.Response
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.lang.Exception
 
 class RetrofitNetworkClient(
     private val context: Context,
     private val rickAndMortyService: RickAndMortyAPI,
-): NetworkClient {
-    override fun doRequest(dto: Any): Response {
+) : NetworkClient {
+    override suspend fun doRequest(dto: Any): Response {
         if (!isConnected()) {
             return Response().apply { resultCode = -1 }
         }
         if (dto !is CharacterRequest) {
             return Response().apply { resultCode = 400 }
         }
-        return try {
-            val resp = rickAndMortyService.searchCharacters(dto.page).execute()
-            val body = resp.body() ?: Response()
-            body.apply {
-                resultCode = resp.code()
+        return withContext(Dispatchers.IO) {
+            try {
+                val resp = rickAndMortyService.searchCharacters(dto.page)
+                resp.apply {
+                    resultCode = 200
+                }
+            } catch (e: Exception) {
+                Response().apply { resultCode = 500 }
             }
-        } catch (e: Exception){
-            Response().apply { resultCode = 400 }
         }
     }
 
