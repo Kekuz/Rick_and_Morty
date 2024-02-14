@@ -19,23 +19,27 @@ class RecyclerViewModel @Inject constructor(
 
     fun observeState(): LiveData<SearchState> = stateLiveData
 
+    private var currentPage = 1
+
 
     fun search() {
-        searchCharactersUseCase.execute(1) { response, errorMessage ->
+        stateLiveData.value = SearchState.Loading
+        searchCharactersUseCase.execute(currentPage) { response, errorMessage ->
             CoroutineScope(Dispatchers.IO).launch {
+                delay(3000)
                 if (response != null) {
                     Log.d("Response", response.results.toString())
-                    if (response.results.isNotEmpty()) {
+                    if (response.results.isNotEmpty() && currentPage <= response.info.pages) {
                         stateLiveData.postValue(SearchState.Content(response.results))
-                    } else {
-                        stateLiveData.postValue(SearchState.Empty)
+                        Log.e("Page", currentPage.toString())
+                        currentPage++
                     }
                 } else if (errorMessage != null) {
                     stateLiveData.postValue(SearchState.Error(errorMessage))
                 }
             }
         }
-    }
 
+    }
 
 }

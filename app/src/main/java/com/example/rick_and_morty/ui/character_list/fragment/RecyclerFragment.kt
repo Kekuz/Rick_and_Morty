@@ -23,10 +23,14 @@ class RecyclerFragment : Fragment() {
     private val vm : RecyclerViewModel by viewModels()
     private lateinit var binding: FragmentRecyclerBinding
 
+    private lateinit var currentState: SearchState
+
 
     private val onEndingList: () -> Unit =
         {
-            //TODO Загрузка данных, когда долистываем до конца страницы
+            if (currentState is SearchState.Content) {
+                vm.search()
+            }
         }
     private val onClick: (Character) -> Unit =
         {
@@ -57,6 +61,7 @@ class RecyclerFragment : Fragment() {
         vm.search()
 
         vm.observeState().observe(viewLifecycleOwner) {
+            currentState = it
             render(it)
         }
 
@@ -65,20 +70,14 @@ class RecyclerFragment : Fragment() {
     private fun render(state: SearchState) {
         when (state) {
             is SearchState.Content -> showContent(state.tracks)
-            is SearchState.Empty -> showEmptyContent()
             is SearchState.Error -> showError(state.errorMessage)
             is SearchState.Loading -> showLoading()
         }
     }
 
     private fun showContent(listCharacters: List<Character>) {
-        characters.clear()
         characters.addAll(listCharacters)
         itemAdapter.notifyItemRangeChanged(characters.size, listCharacters.size)
-    }
-
-    private fun showEmptyContent() {
-        //TODO
     }
 
     private fun showError(errorMessage: String) {
