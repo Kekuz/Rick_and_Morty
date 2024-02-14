@@ -21,7 +21,7 @@ object CharacterMapper {
     private fun characterInfoMap(input: CharacterInfoDto): CharacterInfo {
         return CharacterInfo(
             input.count,
-            input.pages,
+            input.next,
         )
     }
 

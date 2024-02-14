@@ -62,9 +62,7 @@ class ItemFragment : Fragment() {
 
     private fun bindViews() = with(binding) {
         ivImage.load(character?.image) {
-            //crossfade(true)
             placeholder(R.drawable.ic_placeholder)
-            //error(R.drawable.place_holder_icon)
         }
 
         toolBar.setNavigationOnClickListener {

@@ -28,9 +28,9 @@ class RecyclerViewModel @Inject constructor(
             CoroutineScope(Dispatchers.IO).launch {
                 if (response != null) {
                     Log.d("Response", response.results.toString())
-                    if (response.results.isNotEmpty() && currentPage <= response.info.pages) {
+                    if (response.results.isNotEmpty() && response.info.next != null) {
                         stateLiveData.postValue(SearchState.Content(response.results))
-                        Log.e("Page", currentPage.toString())
+                        Log.d("Page", currentPage.toString())
                         currentPage++
                     }
                 } else if (errorMessage != null) {
