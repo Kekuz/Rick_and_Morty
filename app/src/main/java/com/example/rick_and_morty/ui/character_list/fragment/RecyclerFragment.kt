@@ -59,8 +59,6 @@ class RecyclerFragment : Fragment() {
 
         binding.recyclerView.adapter = itemAdapter
 
-        vm.search()
-
         vm.observeState().observe(viewLifecycleOwner) {
             currentState = it
             render(it)

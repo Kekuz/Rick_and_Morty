@@ -25,6 +25,9 @@ class RecyclerViewModel @Inject constructor(
 
     private var currentPage = 1
 
+    init {
+        search()
+    }
 
     fun search() {
         stateLiveData.value = SearchState.Loading
