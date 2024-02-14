@@ -10,8 +10,6 @@ import com.example.rick_and_morty.data.network.dto.characterDto.CharacterRespons
 import com.example.rick_and_morty.domain.api.CharacterRepository
 import com.example.rick_and_morty.domain.model.Resource
 import com.example.rick_and_morty.domain.model.character.CharacterResponse
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 class CharacterRepositoryImpl(
     private val networkClient: NetworkClient,

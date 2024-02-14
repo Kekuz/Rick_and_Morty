@@ -1,11 +1,15 @@
 package com.example.rick_and_morty.di
 
 import android.content.Context
+import com.example.rick_and_morty.data.DatabaseClient
 import com.example.rick_and_morty.data.NetworkClient
+import com.example.rick_and_morty.data.database.RoomDatabaseClient
 import com.example.rick_and_morty.data.network.RetrofitNetworkClient
 import com.example.rick_and_morty.data.network.RickAndMortyAPI
 import com.example.rick_and_morty.data.repository.CharacterRepositoryImpl
+import com.example.rick_and_morty.data.repository.DatabaseRepositoryImpl
 import com.example.rick_and_morty.domain.api.CharacterRepository
+import com.example.rick_and_morty.domain.api.DatabaseRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -37,6 +41,13 @@ class DataModule {
     ): NetworkClient =
         RetrofitNetworkClient(context, rickAndMortyService)
 
+    @Provides
+    @Singleton
+    fun provideDatabaseClient(
+        @ApplicationContext context: Context,
+    ): DatabaseClient =
+        RoomDatabaseClient(context)
+
 
     @Provides
     @Singleton
@@ -45,4 +56,12 @@ class DataModule {
         @ApplicationContext context: Context
     ): CharacterRepository =
         CharacterRepositoryImpl(networkClient, context)
+
+    @Provides
+    @Singleton
+    fun provideDatabaseRepository(
+        databaseClient: DatabaseClient,
+    ): DatabaseRepository =
+        DatabaseRepositoryImpl(databaseClient)
+
 }

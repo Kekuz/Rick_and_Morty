@@ -4,6 +4,9 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.rick_and_morty.data.DatabaseClient
+import com.example.rick_and_morty.domain.api.DatabaseInteractor
+import com.example.rick_and_morty.domain.api.DatabaseRepository
 import com.example.rick_and_morty.domain.api.SearchCharactersUseCase
 import com.example.rick_and_morty.ui.model.SearchState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -12,7 +15,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RecyclerViewModel @Inject constructor(
-    private val searchCharactersUseCase: SearchCharactersUseCase
+    private val searchCharactersUseCase: SearchCharactersUseCase,
+    private val databaseInteractor: DatabaseInteractor,
 ) : ViewModel() {
 
     private val stateLiveData = MutableLiveData<SearchState>()
@@ -32,13 +36,23 @@ class RecyclerViewModel @Inject constructor(
                         stateLiveData.postValue(SearchState.Content(response.results))
                         Log.d("Page", currentPage.toString())
                         currentPage++
+                        databaseInteractor.saveCharacters(response.results)
                     }
                 } else if (errorMessage != null) {
-                    stateLiveData.postValue(SearchState.Error(errorMessage))
+                    getCharactersFromDatabase(errorMessage)
                 }
             }
         }
+    }
 
+    private fun getCharactersFromDatabase(errorMessage: String) {
+        databaseInteractor.getCharacters {
+            CoroutineScope(Dispatchers.IO).launch {
+                Log.e("Launches from DB", it.toString())
+                val error = SearchState.Error(it, errorMessage)
+                stateLiveData.postValue(error)
+            }
+        }
     }
 
 }

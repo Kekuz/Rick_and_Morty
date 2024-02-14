@@ -1,10 +1,6 @@
-package com.example.rick_and_morty.domain.model.character
+package com.example.rick_and_morty.data.database.dto
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
-
-@Parcelize
-data class Character(
+data class CharacterDatabaseDto(
     val id: Int,
     val name: String,
     val status: String,
@@ -13,4 +9,4 @@ data class Character(
     val gender: String,
     val image: String,
     val created: String,
-) : Parcelable
+)

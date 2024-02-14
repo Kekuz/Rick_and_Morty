@@ -21,7 +21,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class RecyclerFragment : Fragment() {
 
-    private val vm : RecyclerViewModel by viewModels()
+    private val vm: RecyclerViewModel by viewModels()
     private lateinit var binding: FragmentRecyclerBinding
 
     private lateinit var currentState: SearchState
@@ -70,13 +70,13 @@ class RecyclerFragment : Fragment() {
 
     private fun render(state: SearchState) {
         when (state) {
-            is SearchState.Content -> showContent(state.tracks)
-            is SearchState.Error -> showError(state.errorMessage)
+            is SearchState.Content -> showContent(state.characters)
+            is SearchState.Error -> showError(state.characters, state.errorMessage)
             is SearchState.Loading -> showLoading()
         }
     }
 
-    private fun showContent(listCharacters: List<Character>) = with(binding){
+    private fun showContent(listCharacters: List<Character>) = with(binding) {
         characters.addAll(listCharacters)
         itemAdapter.notifyItemRangeChanged(characters.size, listCharacters.size)
         tvError.isVisible = false
@@ -84,11 +84,21 @@ class RecyclerFragment : Fragment() {
         recyclerView.isVisible = true
     }
 
-    private fun showError(errorMessage: String) = with(binding){
-        recyclerView.isVisible = false
-        tvError.isVisible = true
-        tvError.text = errorMessage
-        progressBar.isVisible = false
+    private fun showError(listFromDB: List<Character>, errorMessage: String) = with(binding) {
+        characters.clear()
+        characters.addAll(listFromDB)
+        itemAdapter.notifyDataSetChanged()
+        if (listFromDB.isEmpty()) {
+            recyclerView.isVisible = false
+            tvError.isVisible = true
+            tvError.text = errorMessage
+            progressBar.isVisible = false
+        } else {
+            recyclerView.isVisible = true
+            tvError.isVisible = false
+            progressBar.isVisible = false
+        }
+
     }
 
     private fun showLoading() {
