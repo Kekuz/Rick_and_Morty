@@ -14,6 +14,7 @@ import com.example.rick_and_morty.domain.model.character.Character
 import com.example.rick_and_morty.ui.character_info.fragment.ItemFragment
 import com.example.rick_and_morty.ui.character_list.recycler.ItemAdapter
 import com.example.rick_and_morty.ui.character_list.view_model.RecyclerViewModel
+import com.example.rick_and_morty.ui.model.RecyclerFragmentEvent
 import com.example.rick_and_morty.ui.model.SearchState
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -24,19 +25,12 @@ class RecyclerFragment : Fragment() {
     private val vm: RecyclerViewModel by viewModels()
     private lateinit var binding: FragmentRecyclerBinding
 
-    private val onEndingList: () -> Unit =
-        {
-            if (vm.currentState() is SearchState.Content) {
-                vm.search()
-            }
+    private val onEndingList: () -> Unit = {
+            vm.searchNextPage()
         }
 
-    private val onClick: (Character) -> Unit =
-        {
-            findNavController().navigate(
-                R.id.action_recyclerFragment_to_itemFragment,
-                ItemFragment.createArgs(it)
-            )
+    private val onClick: (Character) -> Unit = {
+            vm.itemClicked(it)
         }
 
     private val itemAdapter = ItemAdapter(onClick, onEndingList)
@@ -60,7 +54,26 @@ class RecyclerFragment : Fragment() {
             render(it)
         }
 
+        vm.observeEvent().observe(viewLifecycleOwner){
+            eventHandler(it)
+        }
+
     }
+
+    private fun eventHandler(event: RecyclerFragmentEvent){
+        when(event){
+            is RecyclerFragmentEvent.ClickRecyclerItemEvent -> navigateToDetails(event.character)
+            is RecyclerFragmentEvent.EndingListEvent -> {/*Nothing*/}
+        }
+    }
+
+    private fun navigateToDetails(character: Character){
+        findNavController().navigate(
+            R.id.action_recyclerFragment_to_itemFragment,
+            ItemFragment.createArgs(character)
+        )
+    }
+
 
     private fun render(state: SearchState) {
         when (state) {

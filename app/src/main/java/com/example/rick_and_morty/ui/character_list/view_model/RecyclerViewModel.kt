@@ -7,7 +7,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.rick_and_morty.domain.api.DatabaseInteractor
 import com.example.rick_and_morty.domain.api.SearchCharactersUseCase
+import com.example.rick_and_morty.domain.model.character.Character
+import com.example.rick_and_morty.ui.model.RecyclerFragmentEvent
 import com.example.rick_and_morty.ui.model.SearchState
+import com.example.rick_and_morty.ui.util.SingleLiveEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import javax.inject.Inject
@@ -19,11 +22,12 @@ class RecyclerViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val stateLiveData = MutableLiveData<SearchState>()
-
     fun observeState(): LiveData<SearchState> = stateLiveData
 
-    fun currentState(): SearchState =
-        stateLiveData.value ?: SearchState.Loading
+
+    private val eventLiveData = SingleLiveEvent<RecyclerFragmentEvent>()
+    fun observeEvent(): LiveData<RecyclerFragmentEvent> = eventLiveData
+
 
     private var currentPage = 1
 
@@ -32,7 +36,7 @@ class RecyclerViewModel @Inject constructor(
         search()
     }
 
-    fun search() {
+    private fun search() {
         stateLiveData.value = SearchState.Loading
 
         viewModelScope.launch {
@@ -54,10 +58,21 @@ class RecyclerViewModel @Inject constructor(
         }
     }
 
+    fun searchNextPage(){
+        if (stateLiveData.value is SearchState.Content) {
+            search()
+        }
+        eventLiveData.value = RecyclerFragmentEvent.EndingListEvent
+    }
+
+    fun itemClicked(character: Character){
+        eventLiveData.value = RecyclerFragmentEvent.ClickRecyclerItemEvent(character)
+    }
+
     private fun getCharactersFromDatabase(errorMessage: String) {
         databaseInteractor.getCharacters {
             CoroutineScope(Dispatchers.IO).launch {
-                Log.e("Launches from DB", it.toString())
+                Log.d("Launches from DB", it.toString())
                 val error = SearchState.Error(it, errorMessage)
                 stateLiveData.postValue(error)
             }
