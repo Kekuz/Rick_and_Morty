@@ -2,10 +2,11 @@ package com.example.rick_and_morty.ui.character_info.recycler
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.rick_and_morty.databinding.InfoViewBinding
 
-class InfoAdapter : RecyclerView.Adapter<InfoViewHolder>() {
+class InfoAdapter : ListAdapter<Pair<String, String>, InfoViewHolder>(ItemComparator()) {
 
     private val pairs = mutableListOf<Pair<String, String>>()
 
