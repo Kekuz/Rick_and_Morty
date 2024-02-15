@@ -72,7 +72,6 @@ class RecyclerFragment : Fragment() {
 
     private fun showContent(listCharacters: List<Character>) = with(binding) {
         itemAdapter.addCharacters(listCharacters)
-        itemAdapter.notifyItemRangeChanged(itemAdapter.itemCount, listCharacters.size)
         tvError.isVisible = false
         progressBar.isVisible = false
         recyclerView.isVisible = true
@@ -81,7 +80,6 @@ class RecyclerFragment : Fragment() {
     private fun showError(listFromDB: List<Character>, errorMessage: String) = with(binding) {
         itemAdapter.clearCharacters()
         itemAdapter.addCharacters(listFromDB)
-        itemAdapter.notifyDataSetChanged()
         if (listFromDB.isEmpty()) {
             recyclerView.isVisible = false
             tvError.isVisible = true
