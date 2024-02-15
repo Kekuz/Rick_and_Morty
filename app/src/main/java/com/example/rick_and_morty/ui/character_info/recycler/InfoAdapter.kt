@@ -4,13 +4,15 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.rick_and_morty.databinding.InfoViewBinding
-import com.example.rick_and_morty.databinding.ItemViewBinding
-import com.example.rick_and_morty.domain.model.character.Character
 
-class InfoAdapter(
-    private val launches: List<Pair<String, String>>,
-) :
-    RecyclerView.Adapter<InfoViewHolder>() {
+class InfoAdapter : RecyclerView.Adapter<InfoViewHolder>() {
+
+    private val pairs = mutableListOf<Pair<String, String>>()
+
+    fun clearPairs() = pairs.clear()
+
+    fun addPairs(pairs: List<Pair<String, String>>) =
+        this.pairs.addAll(pairs)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InfoViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -19,10 +21,10 @@ class InfoAdapter(
     }
 
     override fun onBindViewHolder(holder: InfoViewHolder, position: Int) {
-        holder.bind(launches[position])
+        holder.bind(pairs[position])
     }
 
     override fun getItemCount(): Int {
-        return launches.size
+        return pairs.size
     }
 }

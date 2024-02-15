@@ -5,15 +5,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.rick_and_morty.data.DatabaseClient
-import com.example.rick_and_morty.domain.api.CharacterRepository
 import com.example.rick_and_morty.domain.api.DatabaseInteractor
-import com.example.rick_and_morty.domain.api.DatabaseRepository
 import com.example.rick_and_morty.domain.api.SearchCharactersUseCase
 import com.example.rick_and_morty.ui.model.SearchState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 @HiltViewModel
@@ -26,7 +22,11 @@ class RecyclerViewModel @Inject constructor(
 
     fun observeState(): LiveData<SearchState> = stateLiveData
 
+    fun currentState(): SearchState =
+        stateLiveData.value ?: SearchState.Loading
+
     private var currentPage = 1
+
 
     init {
         search()
@@ -52,8 +52,6 @@ class RecyclerViewModel @Inject constructor(
                 }
             }
         }
-
-
     }
 
     private fun getCharactersFromDatabase(errorMessage: String) {

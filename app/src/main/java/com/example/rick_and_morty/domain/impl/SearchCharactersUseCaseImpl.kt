@@ -1,6 +1,5 @@
 package com.example.rick_and_morty.domain.impl
 
-import android.util.Log
 import com.example.rick_and_morty.domain.api.CharacterRepository
 import com.example.rick_and_morty.domain.api.SearchCharactersUseCase
 import com.example.rick_and_morty.domain.model.Resource

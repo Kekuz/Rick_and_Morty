@@ -26,8 +26,7 @@ class ItemFragment : Fragment() {
 
     private var character: Character? = null
 
-    private val infoPairs = mutableListOf<Pair<String, String>>()
-    private val infoAdapter = InfoAdapter(infoPairs)
+    private val infoAdapter = InfoAdapter()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -54,10 +53,10 @@ class ItemFragment : Fragment() {
         bindViews()
     }
 
-    private fun showContent(listOfPairs: List<Pair<String, String>>) {
-        infoPairs.clear()
-        infoPairs.addAll(listOfPairs)
-        infoAdapter.notifyItemRangeChanged(infoPairs.size, listOfPairs.size)
+    private fun showContent(pairs: List<Pair<String, String>>) = with(infoAdapter) {
+        clearPairs()
+        addPairs(pairs)
+        notifyItemRangeChanged(itemCount, pairs.size)
     }
 
     private fun bindViews() = with(binding) {

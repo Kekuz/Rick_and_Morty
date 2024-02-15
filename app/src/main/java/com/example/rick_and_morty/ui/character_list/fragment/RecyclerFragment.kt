@@ -24,15 +24,13 @@ class RecyclerFragment : Fragment() {
     private val vm: RecyclerViewModel by viewModels()
     private lateinit var binding: FragmentRecyclerBinding
 
-    private lateinit var currentState: SearchState
-
-
     private val onEndingList: () -> Unit =
         {
-            if (currentState is SearchState.Content) {
+            if (vm.currentState() is SearchState.Content) {
                 vm.search()
             }
         }
+
     private val onClick: (Character) -> Unit =
         {
             findNavController().navigate(
@@ -41,8 +39,7 @@ class RecyclerFragment : Fragment() {
             )
         }
 
-    private val characters = mutableListOf<Character>()
-    private val itemAdapter = ItemAdapter(characters, onClick, onEndingList)
+    private val itemAdapter = ItemAdapter(onClick, onEndingList)
 
 
     override fun onCreateView(
@@ -60,7 +57,6 @@ class RecyclerFragment : Fragment() {
         binding.recyclerView.adapter = itemAdapter
 
         vm.observeState().observe(viewLifecycleOwner) {
-            currentState = it
             render(it)
         }
 
@@ -75,16 +71,16 @@ class RecyclerFragment : Fragment() {
     }
 
     private fun showContent(listCharacters: List<Character>) = with(binding) {
-        characters.addAll(listCharacters)
-        itemAdapter.notifyItemRangeChanged(characters.size, listCharacters.size)
+        itemAdapter.addCharacters(listCharacters)
+        itemAdapter.notifyItemRangeChanged(itemAdapter.itemCount, listCharacters.size)
         tvError.isVisible = false
         progressBar.isVisible = false
         recyclerView.isVisible = true
     }
 
     private fun showError(listFromDB: List<Character>, errorMessage: String) = with(binding) {
-        characters.clear()
-        characters.addAll(listFromDB)
+        itemAdapter.clearCharacters()
+        itemAdapter.addCharacters(listFromDB)
         itemAdapter.notifyDataSetChanged()
         if (listFromDB.isEmpty()) {
             recyclerView.isVisible = false

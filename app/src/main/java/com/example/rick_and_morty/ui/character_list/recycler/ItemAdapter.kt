@@ -7,11 +7,18 @@ import com.example.rick_and_morty.databinding.ItemViewBinding
 import com.example.rick_and_morty.domain.model.character.Character
 
 class ItemAdapter(
-    private val launches: List<Character>,
     private val onClick: (Character) -> Unit,
     private val onEndingList: () -> Unit,
 ) :
     RecyclerView.Adapter<ItemViewHolder>() {
+
+    private val characters = mutableListOf<Character>()
+
+    fun addCharacters(characters: List<Character>) =
+        this.characters.addAll(characters)
+
+    fun clearCharacters() =
+        this.characters.clear()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -20,16 +27,16 @@ class ItemAdapter(
     }
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
-        holder.bind(launches[position], onClick)
+        holder.bind(characters[position], onClick)
 
 
-        if (position == launches.size - 1) {
+        if (position == characters.size - 1) {
             onEndingList.invoke()
         }
 
     }
 
     override fun getItemCount(): Int {
-        return launches.size
+        return characters.size
     }
 }

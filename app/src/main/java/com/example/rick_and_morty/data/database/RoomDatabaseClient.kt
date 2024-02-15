@@ -9,7 +9,7 @@ class RoomDatabaseClient(private val database: CharacterDatabase) : DatabaseClie
 
 
     override fun save(characters: List<CharacterDatabaseDto>) {
-        Log.e("Characters saved in database", characters.toString())
+        Log.d("Characters saved in database", characters.toString())
         database.characterDao?.insertAll(characters.map { DatabaseMapper.map(it) })
     }
 
