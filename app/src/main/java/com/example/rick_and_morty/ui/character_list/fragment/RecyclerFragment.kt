@@ -1,37 +1,52 @@
 package com.example.rick_and_morty.ui.character_list.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.rick_and_morty.R
+import com.example.rick_and_morty.app.App
 import com.example.rick_and_morty.databinding.FragmentRecyclerBinding
+import com.example.rick_and_morty.domain.api.DatabaseInteractor
+import com.example.rick_and_morty.domain.api.SearchCharactersUseCase
 import com.example.rick_and_morty.domain.model.character.Character
 import com.example.rick_and_morty.ui.character_info.fragment.ItemFragment
 import com.example.rick_and_morty.ui.character_list.recycler.ItemAdapter
+import com.example.rick_and_morty.ui.character_list.view_model.RecyclerFactory
 import com.example.rick_and_morty.ui.character_list.view_model.RecyclerViewModel
 import com.example.rick_and_morty.ui.model.RecyclerFragmentEvent
 import com.example.rick_and_morty.ui.model.SearchState
-import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 
-@AndroidEntryPoint
 class RecyclerFragment : Fragment() {
 
-    private val vm: RecyclerViewModel by viewModels()
+    private lateinit var vm: RecyclerViewModel
+
+    @Inject
+    lateinit var searchCharactersUseCase: SearchCharactersUseCase
+
+    @Inject
+    lateinit var databaseInteractor: DatabaseInteractor
+
+
     private lateinit var binding: FragmentRecyclerBinding
 
     private val onEndingList: () -> Unit = {
-            vm.searchNextPage()
-        }
+        vm.searchNextPage()
+    }
 
     private val onClick: (Character) -> Unit = {
-            vm.itemClicked(it)
-        }
+        vm.itemClicked(it)
+    }
 
     private val itemAdapter = ItemAdapter(onClick, onEndingList)
 
@@ -40,7 +55,16 @@ class RecyclerFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        (activity?.applicationContext as App).appComponent.inject(this)
         binding = FragmentRecyclerBinding.inflate(inflater, container, false)
+
+        vm = ViewModelProvider(
+            this,
+            RecyclerFactory(
+                searchCharactersUseCase,
+                databaseInteractor,
+            )
+        )[RecyclerViewModel::class.java]
 
         return binding.root
     }
@@ -50,24 +74,28 @@ class RecyclerFragment : Fragment() {
 
         binding.recyclerView.adapter = itemAdapter
 
+
+
+
         vm.observeState().observe(viewLifecycleOwner) {
             render(it)
         }
 
-        vm.observeEvent().observe(viewLifecycleOwner){
+        vm.observeEvent().observe(viewLifecycleOwner) {
             eventHandler(it)
         }
 
     }
 
-    private fun eventHandler(event: RecyclerFragmentEvent){
-        when(event){
+    private fun eventHandler(event: RecyclerFragmentEvent) {
+        when (event) {
             is RecyclerFragmentEvent.ClickRecyclerItemEvent -> navigateToDetails(event.character)
-            is RecyclerFragmentEvent.EndingListEvent -> {/*Nothing*/}
+            is RecyclerFragmentEvent.EndingListEvent -> {/*Nothing*/
+            }
         }
     }
 
-    private fun navigateToDetails(character: Character){
+    private fun navigateToDetails(character: Character) {
         findNavController().navigate(
             R.id.action_recyclerFragment_to_itemFragment,
             ItemFragment.createArgs(character)

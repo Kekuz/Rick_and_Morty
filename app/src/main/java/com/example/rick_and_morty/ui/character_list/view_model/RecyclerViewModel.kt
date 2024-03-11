@@ -11,12 +11,10 @@ import com.example.rick_and_morty.domain.model.character.Character
 import com.example.rick_and_morty.ui.model.RecyclerFragmentEvent
 import com.example.rick_and_morty.ui.model.SearchState
 import com.example.rick_and_morty.ui.util.SingleLiveEvent
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
-@HiltViewModel
-class RecyclerViewModel @Inject constructor(
+class RecyclerViewModel(
     private val searchCharactersUseCase: SearchCharactersUseCase,
     private val databaseInteractor: DatabaseInteractor,
 ) : ViewModel() {

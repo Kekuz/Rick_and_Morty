@@ -1,7 +1,20 @@
 package com.example.rick_and_morty.app
 
 import android.app.Application
-import dagger.hilt.android.HiltAndroidApp
+import com.example.rick_and_morty.di.AppComponent
+import com.example.rick_and_morty.di.AppModule
+import com.example.rick_and_morty.di.DaggerAppComponent
 
-@HiltAndroidApp
-class App : Application()
+class App : Application() {
+    lateinit var appComponent: AppComponent
+    override fun onCreate() {
+        super.onCreate()
+
+        appComponent = DaggerAppComponent
+            .builder()
+            .appModule(AppModule(this))
+            .build()
+
+    }
+
+}

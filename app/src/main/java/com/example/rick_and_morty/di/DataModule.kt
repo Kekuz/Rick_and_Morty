@@ -14,19 +14,15 @@ import com.example.rick_and_morty.domain.api.CharacterRepository
 import com.example.rick_and_morty.domain.api.DatabaseRepository
 import dagger.Module
 import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 @Module
-@InstallIn(SingletonComponent::class)
+//@Singleton
 class DataModule {
 
     @Provides
-    @Singleton
     fun provideRickAndMortyService(): RickAndMortyAPI =
         Retrofit.Builder()
             .baseUrl("https://rickandmortyapi.com")
@@ -36,8 +32,7 @@ class DataModule {
 
 
     @Provides
-    @Singleton
-    fun provideCharacterDatabase(@ApplicationContext context: Context): CharacterDatabase =
+    fun provideCharacterDatabase(context: Context): CharacterDatabase =
         Room.databaseBuilder(
             context,
             CharacterDatabase::class.java, "character-database"
@@ -45,15 +40,13 @@ class DataModule {
 
 
     @Provides
-    @Singleton
     fun provideNetworkClient(
-        @ApplicationContext context: Context,
+        context: Context,
         rickAndMortyService: RickAndMortyAPI
     ): NetworkClient =
         RetrofitNetworkClient(context, rickAndMortyService)
 
     @Provides
-    @Singleton
     fun provideDatabaseClient(
         characterDatabase: CharacterDatabase,
     ): DatabaseClient =
@@ -61,15 +54,13 @@ class DataModule {
 
 
     @Provides
-    @Singleton
     fun provideCharacterRepository(
         networkClient: NetworkClient,
-        @ApplicationContext context: Context
+        context: Context
     ): CharacterRepository =
         CharacterRepositoryImpl(networkClient, context)
 
     @Provides
-    @Singleton
     fun provideDatabaseRepository(
         databaseClient: DatabaseClient,
     ): DatabaseRepository =
