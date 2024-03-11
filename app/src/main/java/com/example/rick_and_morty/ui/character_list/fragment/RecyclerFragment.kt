@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.rick_and_morty.R
 import com.example.rick_and_morty.app.App
@@ -13,6 +14,7 @@ import com.example.rick_and_morty.databinding.FragmentRecyclerBinding
 import com.example.rick_and_morty.domain.model.character.Character
 import com.example.rick_and_morty.ui.character_info.fragment.ItemFragment
 import com.example.rick_and_morty.ui.character_list.recycler.ItemAdapter
+import com.example.rick_and_morty.ui.character_list.view_model.RecyclerFactory
 import com.example.rick_and_morty.ui.character_list.view_model.RecyclerViewModel
 import com.example.rick_and_morty.ui.model.RecyclerFragmentEvent
 import com.example.rick_and_morty.ui.model.SearchState
@@ -21,7 +23,11 @@ import javax.inject.Inject
 
 class RecyclerFragment : Fragment() {
 
-    @Inject lateinit var vm: RecyclerViewModel
+    private lateinit var vm: RecyclerViewModel
+
+    @Inject
+    lateinit var recyclerFactory: RecyclerFactory
+
 
     private lateinit var binding: FragmentRecyclerBinding
 
@@ -42,6 +48,12 @@ class RecyclerFragment : Fragment() {
     ): View? {
         (activity?.applicationContext as App).appComponent.inject(this)
         binding = FragmentRecyclerBinding.inflate(inflater, container, false)
+
+        vm = ViewModelProvider(
+            this,
+            recyclerFactory
+        )[RecyclerViewModel::class.java]
+
 
         return binding.root
     }

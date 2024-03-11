@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import coil.load
 import com.example.rick_and_morty.R
@@ -20,7 +21,8 @@ import javax.inject.Inject
 
 class ItemFragment : Fragment() {
 
-    @Inject lateinit var vm: ItemViewModel
+    private lateinit var vm: ItemViewModel
+
     private lateinit var binding: FragmentItemBinding
 
     private var character: Character? = null
@@ -33,6 +35,10 @@ class ItemFragment : Fragment() {
     ): View? {
         (activity?.applicationContext as App).appComponent.inject(this)
         binding = FragmentItemBinding.inflate(inflater, container, false)
+
+        vm = ViewModelProvider(
+            this,
+        )[ItemViewModel::class.java]
 
         return binding.root
     }

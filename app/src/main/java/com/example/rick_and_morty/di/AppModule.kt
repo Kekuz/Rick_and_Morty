@@ -4,6 +4,7 @@ import android.content.Context
 import com.example.rick_and_morty.domain.api.DatabaseInteractor
 import com.example.rick_and_morty.domain.api.SearchCharactersUseCase
 import com.example.rick_and_morty.ui.character_info.view_model.ItemViewModel
+import com.example.rick_and_morty.ui.character_list.view_model.RecyclerFactory
 import com.example.rick_and_morty.ui.character_list.view_model.RecyclerViewModel
 import dagger.Module
 import dagger.Provides
@@ -19,16 +20,11 @@ class AppModule(val context: Context) {
 
     @Singleton
     @Provides
-    fun provideRecyclerViewModel(
+    fun provideRecyclerFactory(
         searchCharactersUseCase: SearchCharactersUseCase,
         databaseInteractor: DatabaseInteractor,
-    ): RecyclerViewModel {
-        return RecyclerViewModel(searchCharactersUseCase, databaseInteractor)
+    ): RecyclerFactory {
+        return RecyclerFactory(searchCharactersUseCase, databaseInteractor)
     }
 
-    @Singleton
-    @Provides
-    fun provideItemViewModel(): ItemViewModel {
-        return ItemViewModel()
-    }
 }
