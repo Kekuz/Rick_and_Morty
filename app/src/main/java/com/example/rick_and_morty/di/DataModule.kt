@@ -19,9 +19,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 @Module
-//@Singleton
 class DataModule {
 
+    @Singleton
     @Provides
     fun provideRickAndMortyService(): RickAndMortyAPI =
         Retrofit.Builder()
@@ -30,7 +30,7 @@ class DataModule {
             .build()
             .create(RickAndMortyAPI::class.java)
 
-
+    @Singleton
     @Provides
     fun provideCharacterDatabase(context: Context): CharacterDatabase =
         Room.databaseBuilder(
@@ -38,7 +38,7 @@ class DataModule {
             CharacterDatabase::class.java, "character-database"
         ).build()
 
-
+    @Singleton
     @Provides
     fun provideNetworkClient(
         context: Context,
@@ -46,13 +46,14 @@ class DataModule {
     ): NetworkClient =
         RetrofitNetworkClient(context, rickAndMortyService)
 
+    @Singleton
     @Provides
     fun provideDatabaseClient(
         characterDatabase: CharacterDatabase,
     ): DatabaseClient =
         RoomDatabaseClient(characterDatabase)
 
-
+    @Singleton
     @Provides
     fun provideCharacterRepository(
         networkClient: NetworkClient,
@@ -60,6 +61,7 @@ class DataModule {
     ): CharacterRepository =
         CharacterRepositoryImpl(networkClient, context)
 
+    @Singleton
     @Provides
     fun provideDatabaseRepository(
         databaseClient: DatabaseClient,

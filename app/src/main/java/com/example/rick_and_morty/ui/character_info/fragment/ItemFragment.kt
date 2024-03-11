@@ -7,8 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import coil.load
 import com.example.rick_and_morty.R
@@ -17,13 +15,12 @@ import com.example.rick_and_morty.databinding.FragmentItemBinding
 import com.example.rick_and_morty.domain.model.character.Character
 import com.example.rick_and_morty.ui.character_info.recycler.InfoAdapter
 import com.example.rick_and_morty.ui.character_info.view_model.ItemViewModel
-import com.example.rick_and_morty.ui.character_list.view_model.RecyclerFactory
-import com.example.rick_and_morty.ui.character_list.view_model.RecyclerViewModel
 import com.example.rick_and_morty.ui.mapper.CharacterToListOfPairsMapper
+import javax.inject.Inject
 
 class ItemFragment : Fragment() {
 
-    private lateinit var vm: ItemViewModel
+    @Inject lateinit var vm: ItemViewModel
     private lateinit var binding: FragmentItemBinding
 
     private var character: Character? = null
@@ -36,11 +33,6 @@ class ItemFragment : Fragment() {
     ): View? {
         (activity?.applicationContext as App).appComponent.inject(this)
         binding = FragmentItemBinding.inflate(inflater, container, false)
-
-
-        vm = ViewModelProvider(
-            this,
-        )[ItemViewModel::class.java]
 
         return binding.root
     }
