@@ -15,6 +15,7 @@ import com.example.rick_and_morty.domain.api.DatabaseRepository
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
+import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
@@ -27,6 +28,9 @@ class DataModule {
         Retrofit.Builder()
             .baseUrl("https://rickandmortyapi.com")
             .addConverterFactory(GsonConverterFactory.create())
+            .addCallAdapterFactory(
+                RxJava3CallAdapterFactory.create()
+            )
             .build()
             .create(RickAndMortyAPI::class.java)
 

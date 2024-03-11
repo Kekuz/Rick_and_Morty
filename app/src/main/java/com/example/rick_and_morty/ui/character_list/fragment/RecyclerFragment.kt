@@ -52,8 +52,6 @@ class RecyclerFragment : Fragment() {
         binding.recyclerView.adapter = itemAdapter
 
 
-
-
         vm.observeState().observe(viewLifecycleOwner) {
             render(it)
         }

@@ -4,14 +4,13 @@ import com.example.rick_and_morty.domain.api.CharacterRepository
 import com.example.rick_and_morty.domain.api.SearchCharactersUseCase
 import com.example.rick_and_morty.domain.model.Resource
 import com.example.rick_and_morty.domain.model.character.CharacterResponse
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
+import io.reactivex.rxjava3.core.Single
 
 class SearchCharactersUseCaseImpl(private val repository: CharacterRepository) :
     SearchCharactersUseCase {
     override fun execute(
         page: Int,
-    ): Flow<Pair<CharacterResponse?, String?>> {
+    ): Single<Pair<CharacterResponse?, String?>> {
         return repository.search(page).map {
             when (it) {
                 is Resource.Success -> {

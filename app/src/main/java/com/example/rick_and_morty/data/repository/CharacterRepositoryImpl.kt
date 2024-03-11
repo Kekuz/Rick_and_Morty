@@ -10,33 +10,38 @@ import com.example.rick_and_morty.data.network.dto.characterDto.CharacterRespons
 import com.example.rick_and_morty.domain.api.CharacterRepository
 import com.example.rick_and_morty.domain.model.Resource
 import com.example.rick_and_morty.domain.model.character.CharacterResponse
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.schedulers.Schedulers
 
 class CharacterRepositoryImpl(
     private val networkClient: NetworkClient,
     private val context: Context
 ) : CharacterRepository {
 
-    override fun search(page: Int): Flow<Resource<CharacterResponse>> = flow {
-        val response = networkClient.doRequest(CharacterRequest(page))
-        when (response.resultCode) {
-            -1 -> {
-                emit(Resource.Error(context.getString(R.string.internet_problems)))
+    override fun search(page: Int): Single<Resource<CharacterResponse>> {
+        return networkClient.doRequest(CharacterRequest(page))
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .map {
+                when (it.resultCode) {
+                    -1 -> {
+                        Resource.Error(context.getString(R.string.internet_problems))
+                    }
 
-            }
+                    200 -> {
+                        Log.d("Response", (it as CharacterResponseDto).results.toString())
+                        with(it as CharacterResponseDto) {
+                            val data = CharacterMapper.map(it)
+                            Resource.Success(data)
+                        }
+                    }
 
-            200 -> {
-                Log.d("Response", (response as CharacterResponseDto).results.toString())
-                with(response as CharacterResponseDto) {
-                    val data = CharacterMapper.map(response)
-                    emit(Resource.Success(data))
+                    else -> {
+                        Resource.Error(context.getString(R.string.server_error))
+                    }
                 }
             }
 
-            else -> {
-                emit(Resource.Error(context.getString(R.string.server_error)))
-            }
-        }
     }
 }
