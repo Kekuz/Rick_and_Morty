@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.rick_and_morty.R
 import com.example.rick_and_morty.app.App
@@ -23,10 +23,10 @@ import javax.inject.Inject
 
 class RecyclerFragment : Fragment() {
 
-    private lateinit var vm: RecyclerViewModel
-
     @Inject
     lateinit var recyclerFactory: RecyclerFactory
+
+    private val vm by viewModels<RecyclerViewModel> { recyclerFactory }
 
 
     private lateinit var binding: FragmentRecyclerBinding
@@ -48,12 +48,6 @@ class RecyclerFragment : Fragment() {
     ): View? {
         (activity?.applicationContext as App).appComponent.inject(this)
         binding = FragmentRecyclerBinding.inflate(inflater, container, false)
-
-        vm = ViewModelProvider(
-            this,
-            recyclerFactory
-        )[RecyclerViewModel::class.java]
-
 
         return binding.root
     }
